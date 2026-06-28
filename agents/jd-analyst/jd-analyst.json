@@ -1,0 +1,29 @@
+{
+  "name": "jd-analyst",
+  "description": "Parses a raw job description and scores it honestly against the candidate profile, returning structured fields, a fit score, gaps, strengths, and concrete resume edits.",
+  "instruction": { "$file": "instruction.md" },
+  "toolsets": ["POD"],
+  "visibility": "POD",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "company": { "type": "string", "description": "Hiring company name" },
+      "role": { "type": "string", "description": "Exact job title" },
+      "seniority": { "type": "string", "enum": ["intern", "junior", "mid", "senior", "lead", "staff", "principal", "unknown"] },
+      "location": { "type": "string", "description": "City/region, or empty if not stated" },
+      "work_mode": { "type": "string", "enum": ["remote", "hybrid", "onsite", "unknown"] },
+      "salary_range": { "type": "string", "description": "As stated in the JD, else empty string" },
+      "required_skills": { "type": "array", "items": { "type": "string" }, "description": "Hard requirements only" },
+      "nice_to_have": { "type": "array", "items": { "type": "string" } },
+      "fit_score": { "type": "integer", "minimum": 0, "maximum": 100 },
+      "fit_summary": { "type": "string", "description": "One or two sentences explaining the score" },
+      "fit_strengths": { "type": "array", "items": { "type": "string" } },
+      "fit_gaps": { "type": "array", "items": { "type": "string" } },
+      "resume_suggestions": { "type": "array", "items": { "type": "string" }, "description": "Concrete, specific edits to the candidate's resume to raise fit for THIS job" }
+    },
+    "required": ["company", "role", "required_skills", "fit_score", "fit_summary"]
+  },
+  "permissions": { "grants": [
+    { "resource_type": "folder", "resource_name": "/profile", "permission_ids": ["folder.read"] }
+  ] }
+}

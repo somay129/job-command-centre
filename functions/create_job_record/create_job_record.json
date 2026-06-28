@@ -1,0 +1,11 @@
+{
+  "name": "create_job_record",
+  "description": "Persists the jd-analyst output as a new row in the jobs table and returns its id.",
+  "type": "API",
+  "visibility": "POD",
+  "code": { "$file": "code.py" },
+  "permissions": { "grants": [
+    { "resource_type": "datastore_table", "resource_name": "jobs",
+      "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"] }
+  ] }
+}

@@ -1,0 +1,18 @@
+# dependencies / build output
+node_modules/
+**/node_modules/
+app-src/dist/
+dist/
+**/dist.zip
+*.tsbuildinfo
+
+# python
+**/__pycache__/
+*.pyc
+
+# env / local
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db

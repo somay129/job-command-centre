@@ -1,0 +1,20 @@
+{
+  "name": "outreach-writer",
+  "description": "Drafts a personalized, non-generic recruiter outreach message grounded in the candidate profile and the specific job.",
+  "instruction": { "$file": "instruction.md" },
+  "toolsets": ["POD"],
+  "visibility": "POD",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "channel": { "type": "string", "enum": ["linkedin_dm", "email", "cold_email"] },
+      "subject": { "type": "string", "description": "Subject line for email channels; empty for linkedin_dm" },
+      "body": { "type": "string", "description": "The message text only, ready to send" },
+      "rationale": { "type": "string", "description": "One line: the angle this draft takes and why" }
+    },
+    "required": ["channel", "body"]
+  },
+  "permissions": { "grants": [
+    { "resource_type": "folder", "resource_name": "/profile", "permission_ids": ["folder.read"] }
+  ] }
+}

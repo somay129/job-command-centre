@@ -1,0 +1,128 @@
+{
+  "name": "process-job",
+  "description": "From a pasted JD: analyze + fit-score, persist the job, draft outreach, and generate interview prep — the full enrichment pipeline.",
+  "start": { "type": "MANUAL" },
+  "nodes": [
+    {
+      "id": "intake",
+      "type": "FORM",
+      "label": "Paste the job description",
+      "config": {
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "jd_text": { "type": "string", "title": "Job description" },
+            "source": { "type": "string", "title": "Where did you find it?", "default": "Manual" }
+          },
+          "required": ["jd_text"]
+        },
+        "ui_schema": { "ui:order": ["jd_text", "source"] }
+      }
+    },
+    {
+      "id": "analyze",
+      "type": "AGENT",
+      "label": "Analyze & score fit",
+      "config": {
+        "agent_name": "jd-analyst",
+        "input_mapping": {
+          "jd_text": { "type": "expression", "value": "intake.jd_text" }
+        }
+      }
+    },
+    {
+      "id": "create_job",
+      "type": "FUNCTION",
+      "label": "Save job record",
+      "config": {
+        "function_name": "create_job_record",
+        "input_mapping": {
+          "company": { "type": "expression", "value": "analyze.company" },
+          "role": { "type": "expression", "value": "analyze.role" },
+          "source": { "type": "expression", "value": "intake.source", "optional": true },
+          "jd_raw": { "type": "expression", "value": "intake.jd_text" },
+          "seniority": { "type": "expression", "value": "analyze.seniority", "optional": true },
+          "location": { "type": "expression", "value": "analyze.location", "optional": true },
+          "work_mode": { "type": "expression", "value": "analyze.work_mode", "optional": true },
+          "salary_range": { "type": "expression", "value": "analyze.salary_range", "optional": true },
+          "required_skills": { "type": "expression", "value": "analyze.required_skills", "optional": true },
+          "nice_to_have": { "type": "expression", "value": "analyze.nice_to_have", "optional": true },
+          "fit_score": { "type": "expression", "value": "analyze.fit_score", "optional": true },
+          "fit_summary": { "type": "expression", "value": "analyze.fit_summary", "optional": true },
+          "fit_strengths": { "type": "expression", "value": "analyze.fit_strengths", "optional": true },
+          "fit_gaps": { "type": "expression", "value": "analyze.fit_gaps", "optional": true },
+          "resume_suggestions": { "type": "expression", "value": "analyze.resume_suggestions", "optional": true }
+        }
+      }
+    },
+    {
+      "id": "outreach",
+      "type": "AGENT",
+      "label": "Draft recruiter outreach",
+      "config": {
+        "agent_name": "outreach-writer",
+        "input_mapping": {
+          "company": { "type": "expression", "value": "analyze.company" },
+          "role": { "type": "expression", "value": "analyze.role" },
+          "required_skills": { "type": "expression", "value": "analyze.required_skills", "optional": true },
+          "fit_summary": { "type": "expression", "value": "analyze.fit_summary", "optional": true },
+          "fit_gaps": { "type": "expression", "value": "analyze.fit_gaps", "optional": true }
+        }
+      }
+    },
+    {
+      "id": "save_outreach",
+      "type": "FUNCTION",
+      "label": "Save outreach draft",
+      "config": {
+        "function_name": "attach_outreach",
+        "input_mapping": {
+          "job_id": { "type": "expression", "value": "create_job.job_id" },
+          "channel": { "type": "expression", "value": "outreach.channel", "optional": true },
+          "subject": { "type": "expression", "value": "outreach.subject", "optional": true },
+          "body": { "type": "expression", "value": "outreach.body" },
+          "rationale": { "type": "expression", "value": "outreach.rationale", "optional": true }
+        }
+      }
+    },
+    {
+      "id": "prep",
+      "type": "AGENT",
+      "label": "Generate interview prep",
+      "config": {
+        "agent_name": "interview-coach",
+        "input_mapping": {
+          "company": { "type": "expression", "value": "analyze.company" },
+          "role": { "type": "expression", "value": "analyze.role" },
+          "required_skills": { "type": "expression", "value": "analyze.required_skills", "optional": true },
+          "seniority": { "type": "expression", "value": "analyze.seniority", "optional": true }
+        }
+      }
+    },
+    {
+      "id": "save_prep",
+      "type": "FUNCTION",
+      "label": "Save prep & mark ready",
+      "config": {
+        "function_name": "attach_prep",
+        "input_mapping": {
+          "job_id": { "type": "expression", "value": "create_job.job_id" },
+          "questions": { "type": "expression", "value": "prep.questions", "optional": true },
+          "company_context": { "type": "expression", "value": "prep.company_context", "optional": true },
+          "focus_areas": { "type": "expression", "value": "prep.focus_areas", "optional": true }
+        }
+      }
+    },
+    { "id": "end", "type": "END", "label": "Done" }
+  ],
+  "edges": [
+    { "id": "e1", "source": "intake", "target": "analyze" },
+    { "id": "e2", "source": "analyze", "target": "create_job" },
+    { "id": "e3", "source": "create_job", "target": "outreach" },
+    { "id": "e4", "source": "outreach", "target": "save_outreach" },
+    { "id": "e5", "source": "save_outreach", "target": "prep" },
+    { "id": "e6", "source": "prep", "target": "save_prep" },
+    { "id": "e7", "source": "save_prep", "target": "end" }
+  ],
+  "visibility": "POD"
+}

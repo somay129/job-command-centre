@@ -1,0 +1,17 @@
+{
+  "name": "outreach_drafts",
+  "primary_key_column": "id",
+  "enable_rls": false,
+  "visibility": "POD",
+  "columns": [
+    { "name": "job_id", "type": "UUID", "required": true,
+      "foreign_key": { "references": "jobs.id" } },
+    { "name": "channel", "type": "ENUM", "default": "linkedin_dm",
+      "options": ["linkedin_dm", "email", "cold_email"] },
+    { "name": "subject", "type": "TEXT", "max_length": 200 },
+    { "name": "body", "type": "TEXT", "required": true },
+    { "name": "rationale", "type": "TEXT", "description": "Why the draft is angled the way it is" },
+    { "name": "approved", "type": "BOOLEAN", "default": false }
+  ],
+  "config": {}
+}

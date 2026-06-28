@@ -1,0 +1,29 @@
+{
+  "name": "interview-coach",
+  "description": "Prepares role-specific interview questions with talking points grounded in the candidate's real background, plus company context and focus areas.",
+  "instruction": { "$file": "instruction.md" },
+  "toolsets": ["POD"],
+  "visibility": "POD",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "questions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "question": { "type": "string" },
+            "talking_points": { "type": "array", "items": { "type": "string" } }
+          },
+          "required": ["question", "talking_points"]
+        }
+      },
+      "company_context": { "type": "array", "items": { "type": "string" } },
+      "focus_areas": { "type": "array", "items": { "type": "string" }, "description": "Topics the candidate should revise before the interview" }
+    },
+    "required": ["questions"]
+  },
+  "permissions": { "grants": [
+    { "resource_type": "folder", "resource_name": "/profile", "permission_ids": ["folder.read"] }
+  ] }
+}

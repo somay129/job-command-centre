@@ -1,0 +1,32 @@
+{
+  "name": "jobs",
+  "primary_key_column": "id",
+  "enable_rls": false,
+  "visibility": "POD",
+  "columns": [
+    { "name": "company", "type": "TEXT", "required": true, "max_length": 200 },
+    { "name": "role", "type": "TEXT", "required": true, "max_length": 200 },
+    { "name": "status", "type": "ENUM", "required": true, "default": "applied",
+      "options": ["saved", "applied", "screening", "interview", "offer", "rejected"] },
+    { "name": "source", "type": "TEXT", "max_length": 120, "description": "Where the job was found (LinkedIn, Wellfound, referral, ...)" },
+    { "name": "location", "type": "TEXT", "max_length": 160 },
+    { "name": "work_mode", "type": "ENUM", "default": "unknown",
+      "options": ["remote", "hybrid", "onsite", "unknown"] },
+    { "name": "seniority", "type": "ENUM", "default": "unknown",
+      "options": ["intern", "junior", "mid", "senior", "lead", "staff", "principal", "unknown"] },
+    { "name": "salary_range", "type": "TEXT", "max_length": 120 },
+    { "name": "required_skills", "type": "JSON", "description": "Array of hard-requirement skills parsed from the JD" },
+    { "name": "nice_to_have", "type": "JSON", "description": "Array of preferred-but-optional skills" },
+    { "name": "fit_score", "type": "INTEGER", "description": "0-100 honest match of the candidate profile against the JD" },
+    { "name": "fit_summary", "type": "TEXT", "max_length": 600 },
+    { "name": "fit_strengths", "type": "JSON", "description": "Array of strong matches" },
+    { "name": "fit_gaps", "type": "JSON", "description": "Array of gaps / weak spots" },
+    { "name": "resume_suggestions", "type": "JSON", "description": "Array of concrete resume edits to raise fit for this JD" },
+    { "name": "jd_raw", "type": "TEXT", "description": "The full pasted job description" },
+    { "name": "applied_date", "type": "DATE" },
+    { "name": "notes", "type": "TEXT" },
+    { "name": "processing_state", "type": "ENUM", "default": "processing",
+      "options": ["processing", "ready", "failed"], "description": "Pipeline state of the AI enrichment for this job" }
+  ],
+  "config": {}
+}

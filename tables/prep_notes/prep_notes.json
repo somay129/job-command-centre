@@ -1,0 +1,14 @@
+{
+  "name": "prep_notes",
+  "primary_key_column": "id",
+  "enable_rls": false,
+  "visibility": "POD",
+  "columns": [
+    { "name": "job_id", "type": "UUID", "required": true,
+      "foreign_key": { "references": "jobs.id" } },
+    { "name": "questions", "type": "JSON", "description": "Array of { question, talking_points[] }" },
+    { "name": "company_context", "type": "JSON", "description": "Array of things to know about the company before the interview" },
+    { "name": "focus_areas", "type": "JSON", "description": "Array of topics to revise, derived from the JD + the candidate's gaps" }
+  ],
+  "config": {}
+}

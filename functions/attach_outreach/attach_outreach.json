@@ -1,0 +1,11 @@
+{
+  "name": "attach_outreach",
+  "description": "Saves an outreach draft for a job into the outreach_drafts table.",
+  "type": "API",
+  "visibility": "POD",
+  "code": { "$file": "code.py" },
+  "permissions": { "grants": [
+    { "resource_type": "datastore_table", "resource_name": "outreach_drafts",
+      "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"] }
+  ] }
+}
